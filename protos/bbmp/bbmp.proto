@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package cloudflare.net.bbmp;
+option go_package = "github.com/cloudflare/bbmp2kafka/bbmp";
+
+
+import "net/api/net.proto";
+import "route/api/route.proto";
+
+message BBMPMessage {
+    enum MessageType {
+        Unknown = 0;
+        PeerUpNotification = 1;
+        PeerDownNotification = 2;
+        InitiationMessage = 3;
+        TerminationMessage = 4;
+        RouteMonitoringMessage = 5;
+        RouteMirroringMessage = 6;
+    }
+    MessageType message_type = 1;
+    BBMPUnicastMonitoringMessage bbmp_unicast_monitoring_message = 2;
+}
+
+message BBMPUnicastMonitoringMessage {
+    bio.net.IP router_ip = 1;
+    bio.net.IP local_bpg_ip = 2;
+    bio.net.IP neighbor_bgp_ip = 3;
+    uint32 local_as = 4;
+    uint32 remote_as = 5;
+    bool announcement = 6;
+
+    bio.net.Prefix pfx = 7;
+    bio.route.BGPPath bgp_path = 8;
+    uint32 timestamp = 9;
+}
