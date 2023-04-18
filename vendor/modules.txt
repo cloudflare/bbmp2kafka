@@ -1,4 +1,4 @@
-# github.com/Shopify/sarama v1.37.2
+# github.com/Shopify/sarama v1.38.1
 ## explicit; go 1.17
 github.com/Shopify/sarama
 # github.com/beorn7/perks v1.0.1
@@ -45,8 +45,8 @@ github.com/davecgh/go-spew/spew
 # github.com/eapache/go-resiliency v1.3.0
 ## explicit; go 1.13
 github.com/eapache/go-resiliency/breaker
-# github.com/eapache/go-xerial-snappy v0.0.0-20180814174437-776d5712da21
-## explicit
+# github.com/eapache/go-xerial-snappy v0.0.0-20230111030713-bf00bc1b83b6
+## explicit; go 1.17
 github.com/eapache/go-xerial-snappy
 # github.com/eapache/queue v1.1.0
 ## explicit
@@ -116,7 +116,7 @@ github.com/jcmturner/gokrb5/v8/types
 ## explicit; go 1.13
 github.com/jcmturner/rpc/v2/mstypes
 github.com/jcmturner/rpc/v2/ndr
-# github.com/klauspost/compress v1.15.11
+# github.com/klauspost/compress v1.15.14
 ## explicit; go 1.17
 github.com/klauspost/compress
 github.com/klauspost/compress/fse
