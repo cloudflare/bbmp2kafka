@@ -7,7 +7,7 @@ require (
 	github.com/bio-routing/bio-rd v0.1.7
 	github.com/prometheus/client_golang v1.13.0
 	github.com/sirupsen/logrus v1.6.0
-	google.golang.org/protobuf v1.30.0
+	google.golang.org/protobuf v1.33.0
 )
 
 require (
