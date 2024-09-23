@@ -53,7 +53,7 @@ Then start `bbmp2kafka` to connect to your local Kafka instance using the topic 
 Now you can connect a router to port `5000` of your machine or use the example BMP file provided in the `example_data` directory and feed it into `bbmp2kafka`
 
 ```bash
-nc localhost 5000 < example_data/bmw.raw 
+nc localhost 5000 < example_data/bmp.raw 
 ```
 
 ## Consuming data
