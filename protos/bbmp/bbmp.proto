@@ -32,4 +32,5 @@ message BBMPUnicastMonitoringMessage {
     bio.net.Prefix pfx = 7;
     bio.route.BGPPath bgp_path = 8;
     uint32 timestamp = 9;
+    bool flush = 10;
 }
