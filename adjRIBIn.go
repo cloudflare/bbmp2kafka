@@ -12,7 +12,7 @@ import (
 
 	"github.com/cloudflare/bbmp2kafka/protos/bbmp"
 
-	"github.com/Shopify/sarama"
+	"github.com/IBM/sarama"
 	"google.golang.org/protobuf/proto"
 
 	"github.com/bio-routing/bio-rd/net"
