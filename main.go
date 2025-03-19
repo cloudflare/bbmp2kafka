@@ -16,7 +16,7 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/Shopify/sarama"
+	"github.com/IBM/sarama"
 	prom_bmp "github.com/bio-routing/bio-rd/metrics/bmp/adapter/prom"
 	"github.com/bio-routing/bio-rd/protocols/bgp/server"
 	"github.com/prometheus/client_golang/prometheus"
