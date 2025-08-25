@@ -5,6 +5,7 @@ go 1.23.0
 require (
 	github.com/IBM/sarama v1.45.1
 	github.com/bio-routing/bio-rd v0.1.7
+	github.com/cloudflare/certinel v0.4.1
 	github.com/prometheus/client_golang v1.21.1
 	github.com/sirupsen/logrus v1.9.3
 	google.golang.org/protobuf v1.36.5
@@ -18,6 +19,7 @@ require (
 	github.com/eapache/go-resiliency v1.7.0 // indirect
 	github.com/eapache/go-xerial-snappy v0.0.0-20230731223053-c322873962e3 // indirect
 	github.com/eapache/queue v1.1.0 // indirect
+	github.com/fsnotify/fsnotify v1.7.0 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/hashicorp/errwrap v1.0.0 // indirect

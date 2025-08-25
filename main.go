@@ -8,10 +8,14 @@
 package main
 
 import (
+	"context"
+	"crypto/tls"
+	"crypto/x509"
 	"flag"
 	"fmt"
 	"net"
 	"net/http"
+	"os"
 	"strings"
 	"sync/atomic"
 	"time"
@@ -19,6 +23,7 @@ import (
 	"github.com/IBM/sarama"
 	prom_bmp "github.com/bio-routing/bio-rd/metrics/bmp/adapter/prom"
 	"github.com/bio-routing/bio-rd/protocols/bgp/server"
+	"github.com/cloudflare/certinel/fswatcher"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	log "github.com/sirupsen/logrus"
@@ -28,8 +33,17 @@ import (
 var (
 	bmpListenAddr    = flag.String("bmp.listen.addr", ":5000", "BMP listening address")
 	healthListenAddr = flag.String("health.listen.addr", ":8080", "Prometheus/health/readiness check listening address/port")
-	kafkaCluster     = flag.String("kafka.cluster", "", "Kafka cluster FQDN:port to talk to")
-	kafkaTopic       = flag.String("kafka.topic", "", "Kafka topic to write messages to")
+
+	// Kafka producer configuration
+	kafkaCluster = flag.String("kafka.cluster", "", "Kafka cluster FQDN:port to talk to")
+	kafkaTopic   = flag.String("kafka.topic", "", "Kafka topic to write messages to")
+
+	// Kafka TLS/mTLS configuration
+	KafkaEnableTLS    = flag.Bool("kafka.net.tls", false, "Enable Kafka TLS")
+	KafkaEnablemTLS   = flag.Bool("kafka.net.mtls", false, "Enable Kafka mTLS authentication")
+	KafkaTLSRootPath  = flag.String("kafka.net.tls.root", "", "Path of Kafka TLS root CA")
+	KafkamTLSCertPath = flag.String("kafka.net.mtls.cert", "", "Path of Kafka mTLS certificate")
+	KafkamTLSKeyPath  = flag.String("kafka.net.mtls.key", "", "Path of Kafka mTLS key")
 )
 
 // Prometheus metrics
@@ -128,7 +142,41 @@ func main() {
 	}()
 
 	// Set up kafka connection
-	ssp, err := sarama.NewSyncProducer(kafkaSrvs, nil)
+	kafkaConfig := sarama.NewConfig()
+	kafkaConfig.Producer.Return.Successes = true
+	kafkaConfig.Producer.Return.Errors = true
+	tlsConfig := &tls.Config{
+		MinVersion: tls.VersionTLS12,
+	}
+	if *KafkaEnableTLS {
+		kafkaConfig.Net.TLS.Enable = true
+
+		caCert, err := os.ReadFile(*KafkaTLSRootPath)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		caCertPool := x509.NewCertPool()
+		caCertPool.AppendCertsFromPEM(caCert)
+
+		tlsConfig.RootCAs = caCertPool
+	}
+	if *KafkaEnablemTLS {
+		certinel, err := fswatcher.New(*KafkamTLSCertPath, *KafkamTLSKeyPath)
+		if err != nil {
+			log.WithError(err).Fatal("failed to create certinel")
+		}
+		go func() {
+			if err := certinel.Start(context.Background()); err != nil {
+				log.WithError(err).Fatal("error on certinel loop")
+			}
+		}()
+		tlsConfig.GetClientCertificate = certinel.GetClientCertificate
+	}
+
+	kafkaConfig.Net.TLS.Config = tlsConfig
+
+	ssp, err := sarama.NewSyncProducer(kafkaSrvs, kafkaConfig)
 	if err != nil {
 		log.Fatalf("failed to set up SyncProducer: %v", err)
 	}
